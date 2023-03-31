@@ -11,12 +11,11 @@ export default function useFetch(query){
         const fetchData = async() => {
             try {
                 setData(prev => ({...prev}));
-                const {username} = getUsername()
+                const {username} = !query ?  await getUsername() : ''
                 console.log(username)
-
                 const {data, status} = !query ? await axios.get(`http://localhost:8080/api/user/${username}`) : await axios.get(`http://localhost:8080/api/${query}`);
-
-                if(status === 201){
+                console.log(status)
+                if(status === 200){
                     setData(prev => ({...prev, apiData: data, status: status}));
                 }
             } catch (error) {

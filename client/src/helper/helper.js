@@ -84,7 +84,7 @@ export const updateUser = async(response) => {
         const token = JSON.parse(localStorage.getItem("token"));
         let decode = jwt_decode(token);
         const {_id} = decode;
-        const data = await axios.put(`http://localhost:8080/api/updateUser/${_id}`, {...response} , {headers: { "Authorization": `Bearer ${token}`}});
+        const data = await axios.put(`http://localhost:8080/api/updateUser/${_id}`, response , {headers: { "Authorization": `Bearer ${token}`}});
         return Promise.resolve({data})
     } catch (error) {
         return Promise.reject({error: "check updateUser!"})
