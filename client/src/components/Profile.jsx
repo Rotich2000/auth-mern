@@ -24,7 +24,6 @@ const Profile = () => {
 
   /** fetch an image from backend */
   const [{apiData, serverError}] =  useFetch()
-  console.log(apiData.rest)
 
   const onLogOut = () => {
     dispatch(logout())
@@ -41,18 +40,18 @@ const Profile = () => {
 
   const formik = useFormik({
     initialValues:{
-      firstName: apiData.rest?.firstName || '',
-      lastName: apiData.rest?.lastName || '',
-      email: apiData.rest?.email || '',
-      mobile: apiData.rest?.mobile || '',
-      address: apiData.rest?.address || ''
+      firstName: apiData?.firstName || '',
+      lastName: apiData?.lastName || '',
+      email: apiData?.email || '',
+      mobile: apiData?.mobile || '',
+      address: apiData?.address || ''
     },
     enableReinitialize: true,
     validate: profileValidate,
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async(values) => {
-      values = await Object.assign(values, {profile : file || apiData.rest?.profile || ''});
+      values = await Object.assign(values, {profile : file || apiData?.profile || ''});
       let updatePromise = updateUser(values);
       toast.promise(updatePromise, {
         loading: 'Updating...',
@@ -79,14 +78,14 @@ const Profile = () => {
         <div className="title flex flex-col items-center">
           <h4 className="text-3xl font-bold">Profile</h4>
           <span className="text-xl py-2 text-gray-700 text-center w-[90%]">
-            You can update your details {apiData.rest?.username || ""}
+            You can update your details {apiData?.username || ""}
           </span>
         </div>
 
         <form className='py-1' onSubmit={formik.handleSubmit} >
           <div className="profile flex justify-center py-4">
             <label htmlFor="profile">
-            <img src={ apiData.rest?.profile ||file || avatar} alt="avatar" className={`${styles.profile_img} ${extend.profile_img}`} />
+            <img src={ apiData?.profile ||file || avatar} alt="avatar" className={`${styles.profile_img} ${extend.profile_img}`} />
             </label>
             {/* id should be same with the htmlFor property in the label */}
             <input type="file" id='profile' name='profile' onChange={onUpload} />

@@ -109,7 +109,7 @@ export const getUser = async (req, res) => {
       res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
       res.setHeader("Pragma", "no-cache");
       res.setHeader("Expires", "0");
-      return res.status(200).json({ rest });
+      return res.status(200).json(rest);
     } else {
       res.status(404).send({ error: "Couldn't find the user!" });
     }
