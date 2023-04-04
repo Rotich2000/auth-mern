@@ -58,7 +58,6 @@ const Profile = () => {
         success: <b>Updated successfully</b>,
         error: <b>Could not Update!</b>
       })
-      console.log("Run")
     }
   })
   /** formik doesn't support file upload so we need to create this handler */

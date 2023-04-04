@@ -1,9 +1,34 @@
 import React from 'react'
 import {Toaster} from 'react-hot-toast'
+import {useFormik} from 'formik'
+/** get email from our store */
 
 import styles from '../styles/username.module.css';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+import { setUsername } from '../features/auth/usernameSlice';
+import { usernameValidate} from '../helper/validate';
 
 const ForgotPassword = () => {
+
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+ 
+
+  const formik = useFormik({
+    initialValues:{
+      username:'',
+    },
+    validate: usernameValidate,
+    validateOnBlur: false,
+    validateOnChange: false,
+    onSubmit: async(values) => {
+      dispatch(setUsername(values.username));
+      navigate("/recovery")    
+    }
+  })
+
   return (
     <div className="container mx-auto">
       <Toaster position='top-center' reverseOrder={false}/>
@@ -17,13 +42,13 @@ const ForgotPassword = () => {
           </span>
         </div>
 
-        <form className='pt-20' >
+        <form className='pt-20' onSubmit={formik.handleSubmit} >
           <div className="textbox flex flex-col items-center gap-6">
             <div className="input text-center">
             <span className='py-4 text-sm text-left text-gray-800'>
             An email containing your OTP to reset your password will be sent to you 
             </span>
-            <input type="password" placeholder='Enter your email' className={styles.textbox} />
+            <input type="username" {...formik.getFieldProps('username')} placeholder='Enter username!' className={styles.textbox} />
             </div>
             <button className={styles.btn} type='submit'>Submit</button>
           </div>

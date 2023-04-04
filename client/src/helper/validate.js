@@ -72,6 +72,13 @@ const passwordVerify = (error = {}, values) => {
     return error;
 }
 
+/** validate email */
+export async function emailValidate(values){
+    const errors = emailVerify({}, values);
+    return errors;
+}
+
+
 /** verify email */
 const emailVerify = (error = {}, values) => {
     if(!values.email){

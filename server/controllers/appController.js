@@ -9,7 +9,23 @@ export async function verifyUser(req, res, next) {
     //store the userdata on a variable username, query if the request method is get
     // else body if request method is post or put
     const { username } = req.method === "GET" ? req.query : req.body;
-    let exist = await UserModel.find({ username });
+    let exist = await UserModel.findOne({ username });
+    if (!exist) {
+      return res.status(404).send({ error: "User not found" });
+    }
+    next();
+  } catch (error) {
+    res.status(404).send({ error: "Authentication Error" });
+  }
+}
+
+/** Middleware to verify email */
+export async function verifyEmail(req, res, next) {
+  try {
+    //store the userdata on a variable username, query if the request method is get
+    // else body if request method is post or put
+    const { email } = req.method === "GET"? req.query : req.body;
+    let exist = await UserModel.find({ email });
     if (!exist) {
       return res.status(404).send({ error: "User not found" });
     }
@@ -74,8 +90,8 @@ export const login = async (req, res) => {
     }
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (passwordMatch) {
-      const { username, _id } = user;
-      const token = jwt.sign({ _id, username }, process.env.JWT_SECRET, {
+      const { username, _id, email } = user;
+      const token = jwt.sign({ _id, username, email }, process.env.JWT_SECRET, {
         expiresIn: "24h",
       });
       return res
@@ -109,6 +125,7 @@ export const getUser = async (req, res) => {
       res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
       res.setHeader("Pragma", "no-cache");
       res.setHeader("Expires", "0");
+      // console.log(rest)
       return res.status(200).json(rest);
     } else {
       res.status(404).send({ error: "Couldn't find the user!" });
@@ -181,8 +198,7 @@ export const verifyOTP = async (req, res) => {
 /** GET: http://localhost:8080/api/verifyOTP */
 export const createResetSession = async (req, res) => {
   if (req.app.locals.resetSession) {
-    req.app.locals.resetSession = false;
-    return res.status(201).json({ message: "reset password!" });
+    return res.status(201).json({ flag: req.app.locals.resetSession });
   }
   return res.status(440).send({ error: "Session expired!" });
 };

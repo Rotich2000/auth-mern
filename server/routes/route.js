@@ -2,7 +2,7 @@ import {Router} from 'express';
 const router = Router()
 
 // /** import all controllers */
-import {register, login, getUser, updateUser, generateOTP, verifyOTP, createResetSession, resetPassword, verifyUser } from '../controllers/appController.js'
+import {register, login, getUser, updateUser, generateOTP, verifyOTP, createResetSession, resetPassword, verifyUser, verifyEmail } from '../controllers/appController.js'
 import {sendMail} from '../controllers/mailer.js';
 import Auth, {localVariables} from '../middleware/auth.js';
 

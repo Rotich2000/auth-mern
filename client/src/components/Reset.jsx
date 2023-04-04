@@ -1,11 +1,22 @@
 import React from 'react'
-import {Toaster} from 'react-hot-toast'
+import {Toaster, toast} from 'react-hot-toast'
 import {useFormik} from 'formik'
 import {resetPasswordValidate} from '../helper/validate';
+import { resetPassword } from '../helper/helper';
+
 
 import styles from '../styles/username.module.css';
+import { useSelector } from 'react-redux';
+import { useNavigate, Navigate } from 'react-router-dom';
+import useFetch from '../hooks/fetchHook';
+
 
 const Reset = () => {
+
+  const navigate = useNavigate()
+  const {username} = useSelector(state => state.username)
+
+  const [{serverError,status}] = useFetch('createResetSession')
 
   const formik = useFormik({
     initialValues:{
@@ -16,9 +27,19 @@ const Reset = () => {
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async(values) => {
-      console.log(values)
+      let resetPromise = resetPassword({username, password: values.password })
+      toast.promise(resetPromise, {
+        loading: 'Updating...',
+        success: <b>Password reset Successfully...!</b>,
+        error: <b>Could not reset...!</b>
+      });
+
+      resetPromise.then(function(){navigate("/")})
     }
   })
+
+  if(serverError) return <h1 className='text-xl text-red-500'>{serverError.message}</h1>
+  if(status && status !== 201) return <Navigate to="/" replace={true} ></Navigate>
 
   return (
     <div className="container mx-auto">
